@@ -24,9 +24,9 @@ disciplinas = ['matematica','fisica','quimica', 'biologia','historia',
 bebidas = ['agua','cafe','leite', 'cha','suco',
 'refrigerante','energetico','vinho', 'cerveja', 'vodka']
 
-mensagem_inicial = '\nQuais categorias você não quer jogar? \
+mensagem_inicial = '\nQuais categorias você quer excluir? \
 \n1.Esportes \n2.Comidas\n3.Paises\n4.Animais\n5.Objetos\n6.Disciplinas \
-\n7.Bebidas\n0.Continuar\nEscolha uma opção válida depois aperter "enter".'
+\n7.Bebidas\n0.Encerrar\nEscolha uma opção válida depois aperter "enter".'
 print("-"*50 + mensagem_inicial + "\n" + "-"*50)
 # escolher quais categorias o usuário não quer jogar
 # excluir animais, paises, disciplinas etc.
@@ -75,8 +75,8 @@ if len(excluir_opcoes) < 7:
         banco_opcoes.append(bebidas)
 
     time.sleep(2)
-    print('Bom jogo!!!')
-    time.sleep(2)
+    print('-'*20+' Bom jogo!!! ' + '-'*20)
+    time.sleep(1)
     os.system("cls")
     # seleciona aleatoriamente a uma palavra que não foi excluida
     alfabeto = list('abcdefghijklmnopqrstuvwxyz')
@@ -90,23 +90,47 @@ if len(excluir_opcoes) < 7:
     copia = palavra_encontrar
     palavra_encontrar = list(palavra_encontrar)
     y = list('_' * len(palavra_encontrar))
-    
+    chutes = []
     while "_" in y: # inicio do jogo
         # mostra a evolução da palavra a medida que é feito os palpites
         for i in range(len(y)):
             print(y[i], end = ' ')
 
-        palpite = input('Digite uma letra: ')
-        
-        if palpite in alfabeto:
-            if palpite in palavra_encontrar:
-                for i in range(len(palavra_encontrar)):
-                    if palpite == palavra_encontrar[i]:
-                        y[i] = palpite
-            else:
-                print('A letra '+ palpite + ' não está na palavra misteriosa.')
-                print()
+        palpite = input(' Digite uma letra: ')
+
+        # acompanhar os chutes que ja foram dados:
+        if palpite not in  chutes:
+            chutes.append(palpite)
         else:
-            print('\nEscreva uma letra válida.\n')
+            print('Esse palpite ja foi dado antes... ')
+
+        print('\nChutes até agora: {}'.format(chutes))
+        if palpite.casefold() in alfabeto:
+            if palpite.casefold() in palavra_encontrar:
+                for i in range(len(palavra_encontrar)):
+                    if palpite.casefold() == palavra_encontrar[i]:
+                        y[i] = palpite.casefold()
+
+            else:
+                print()
+                print('A letra '+ palpite + ' não está na palavra misteriosa.')
+                
+        else: # caso o palpite seja maior do que duas letras ou simbolos
+            letras_no_alfabeto = True
+            for chute in palpite:
+                if chute.casefold() not in alfabeto:
+                    letras_no_alfabeto = False
+                    break
+            if letras_no_alfabeto == True:
+                resp = input('Você deseja chutar a palavra? sim ou não. ')
+                if resp.casefold() == "sim":
+                    if palpite.casefold() == copia:
+                        break
+                    else:
+                        print("Você errou.")
+            else:
+                print('\nEscreva uma letra válida.\n')
+   
+    os.system("cls")
     print('Parabéns! Você acertou todas as letras da palavra misteriosa.')
     print('Sua palavra era {} '.format(copia))
